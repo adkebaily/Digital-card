@@ -9,19 +9,21 @@
 <meta name="description" content="Digital business card">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f3f4f7;
+    --bg: #f3f5fc;
     --card: #ffffff;
-    --text: #0f1219;
-    --muted: #5d6475;
+    --text: #0f1424;
+    --muted: #5a6273;
     --line: rgba(15, 18, 25, 0.08);
     --row: #f6f7fa;
     --row-hover: #eceef3;
-    --accent: #4f6bff;
-    --accent-2: #00c2b8;
-    --shadow: 0 30px 60px -20px rgba(20, 30, 60, 0.18), 0 2px 6px rgba(20, 30, 60, 0.05);
+    --accent: #4f46e5;
+    --accent-2: #06b6d4;
+    --accent-3: #7c3aed;
+    --on-accent: #ffffff;
+    --shadow: 0 30px 60px -20px rgba(49, 46, 129, 0.25), 0 2px 6px rgba(20, 30, 60, 0.05);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -32,15 +34,17 @@
       --line: rgba(255, 255, 255, 0.07);
       --row: #161a23;
       --row-hover: #1c212c;
-      --accent: #7b8cff;
-      --accent-2: #2de0d4;
+      --accent: #818cf8;
+      --accent-2: #22d3ee;
+      --accent-3: #a78bfa;
+      --on-accent: #0a0d18;
       --shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
     }
   }
   :root[data-theme="dark"] {
     --bg: #07080c; --card: #10131a; --text: #eef0f5; --muted: #9097a8;
     --line: rgba(255,255,255,0.07); --row: #161a23; --row-hover: #1c212c;
-    --accent: #7b8cff; --accent-2: #2de0d4;
+    --accent: #818cf8; --accent-2: #22d3ee; --accent-3: #a78bfa; --on-accent: #0a0d18;
     --shadow: 0 30px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
   }
 
@@ -84,7 +88,7 @@
   .banner {
     height: 112px;
     background:
-      linear-gradient(135deg, var(--accent), var(--accent-2));
+      linear-gradient(120deg, var(--accent) 0%, var(--accent-3) 50%, var(--accent-2) 100%);
     position: relative;
     overflow: hidden;
   }
@@ -113,12 +117,24 @@
   }
   .theme-toggle:hover { color: var(--text); }
 
-  h1 { font-size: 24px; font-weight: 700; letter-spacing: -.02em; margin-top: 14px; }
+  h1 { font-family: "Plus Jakarta Sans", "Inter", sans-serif; font-size: 25px; font-weight: 800; letter-spacing: -.02em; margin-top: 14px; line-height: 1.2; }
   .role {
     font-size: 14.5px; font-weight: 500; margin-top: 4px;
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    background: linear-gradient(90deg, var(--accent), var(--accent-3) 55%, var(--accent-2));
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+  /* raccourcis vers le portfolio : CV, agent CK-AI, projets */
+  .quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 24px 0; }
+  .quick a {
+    display: grid; justify-items: center; gap: 6px; padding: 12px 6px; border-radius: 16px;
+    background: color-mix(in srgb, var(--accent) 9%, var(--card)); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    color: var(--text); text-decoration: none; font-size: 12.5px; font-weight: 600; text-align: center;
+    transition: transform .15s ease, background .15s ease;
+  }
+  .quick a:hover { background: color-mix(in srgb, var(--accent) 15%, var(--card)); transform: translateY(-2px); }
+  .quick a:active { transform: scale(.97); }
+  .quick svg { width: 20px; height: 20px; color: var(--accent); }
   .meta { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; margin-top: 8px; }
   .bio { color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 14px; }
 
@@ -137,7 +153,7 @@
     transition: transform .15s ease, filter .15s ease, background .15s ease;
   }
   .btn:active { transform: scale(.97); }
-  .btn-primary { background: var(--text); color: var(--card); }
+  .btn-primary { background: linear-gradient(120deg, var(--accent), var(--accent-3)); color: var(--on-accent); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 70%, transparent); }
   .btn-primary:hover { filter: brightness(1.15); }
   .btn-ghost { width: 48px; background: var(--row); color: var(--text); border: 1px solid var(--line); }
   .btn-ghost:hover { background: var(--row-hover); }
@@ -235,12 +251,14 @@
   <div class="actions">
     <button class="btn btn-primary" id="saveBtn">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
-      Save contact
+      <span data-t="save">Save contact</span>
     </button>
     <button class="btn btn-ghost" id="shareBtn" aria-label="Share">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M16 6l-4-4-4 4M12 2v13"/></svg>
     </button>
   </div>
+
+  <nav class="quick" id="quick" aria-label="Portfolio"></nav>
 
   <ul class="links" id="links"></ul>
 
@@ -248,7 +266,7 @@
     <span id="year"></span>
     <button id="qrBtn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>
-      Show QR
+      <span data-t="showQr">Show QR</span>
     </button>
   </footer>
 </main>
@@ -256,8 +274,8 @@
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="QR code">
   <div class="modal-box">
     <div class="qr" id="qr"></div>
-    <p>Scan to open this card</p>
-    <button class="btn" id="closeModal">Close</button>
+    <p data-t="scan">Scan to open this card</p>
+    <button class="btn" id="closeModal" data-t="close">Close</button>
   </div>
 </div>
 
@@ -298,6 +316,23 @@ const ICONS = {
   phone:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>'
 };
 
+// Interface en français ou en anglais selon la langue du téléphone
+const FR = (navigator.language || "").toLowerCase().startsWith("fr");
+const T = FR ? {
+  save: "Enregistrer le contact", share: "Partager", showQr: "Afficher le QR", scan: "Scannez pour ouvrir cette carte",
+  close: "Fermer", copied: "Lien copié", message: "Envoyez-moi un message", call: "Appeler",
+  cv: "Mon CV", agent: "Demander à CK-AI", projects: "Mes projets", theme: "Changer de thème"
+} : {
+  save: "Save contact", share: "Share", showQr: "Show QR", scan: "Scan to open this card",
+  close: "Close", copied: "Link copied", message: "Send me a message", call: "Call",
+  cv: "My CV", agent: "Ask CK-AI", projects: "My projects", theme: "Toggle theme"
+};
+document.documentElement.lang = FR ? "fr" : "en";
+document.querySelectorAll("[data-t]").forEach(el => { el.textContent = T[el.dataset.t]; });
+document.getElementById("shareBtn").setAttribute("aria-label", T.share);
+document.getElementById("themeBtn").setAttribute("aria-label", T.theme);
+
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const short = u => u.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 const P = PROFILE;
 const fullName = `${P.firstName} ${P.lastName}`;
@@ -307,9 +342,9 @@ const LINKS = [
   { key: "portfolio", label: "Portfolio",  sub: short(P.portfolio), href: P.portfolio, color: "linear-gradient(135deg,#4f6bff,#00c2b8)" },
   { key: "linkedin",  label: "LinkedIn",   sub: short(P.linkedin),  href: P.linkedin,  color: "#0a66c2" },
   { key: "github",    label: "GitHub",     sub: short(P.github),    href: P.github,    color: "#24292f" },
-  { key: "whatsapp",  label: "WhatsApp",   sub: "Send me a message", href: `https://wa.me/${P.whatsapp}`, color: "#25d366" },
-  { key: "email",     label: "Email",      sub: P.email,            href: `mailto:${P.email}`, color: "#ea4335" },
-  { key: "phone",     label: "Call",       sub: P.phone,            href: `tel:${P.phone.replace(/\s/g, "")}`, color: "#ff8a00" }
+  { key: "whatsapp",  label: "WhatsApp",   sub: T.message, href: `https://wa.me/${P.whatsapp}`, color: "#1e8f4a" },
+  { key: "email",     label: "Email",      sub: P.email,            href: `mailto:${P.email}`, color: "#d93025" },
+  { key: "phone",     label: T.call,       sub: P.phone,            href: `tel:${P.phone.replace(/\s/g, "")}`, color: "#c2410c" }
 ];
 
 // --- render ---
@@ -319,16 +354,27 @@ document.getElementById("role").textContent = P.role;
 document.getElementById("location").textContent = P.location;
 document.getElementById("bio").textContent = P.bio;
 document.getElementById("year").textContent = `© ${new Date().getFullYear()} ${fullName}`;
-document.getElementById("tags").innerHTML = P.tags.map(t => `<span class="tag">${t}</span>`).join("");
+document.getElementById("tags").innerHTML = P.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("");
+
+// Raccourcis vers le portfolio (CV dans la langue du téléphone, agent CK-AI, projets)
+const site = P.portfolio.replace(/\/?$/, "/");
+const page = FR ? site : site + "en/";
+const QUICK = [
+  { label: T.cv, href: site + (FR ? "CV_Kebaily.pdf" : "CV_Kebaily_EN.pdf"), icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>' },
+  { label: T.agent, href: page + "#assistant", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 14h.01M15 14h.01"/></svg>' },
+  { label: T.projects, href: page + "#projets", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>' },
+];
+document.getElementById("quick").innerHTML = QUICK.map(q =>
+  `<a href="${esc(q.href)}" target="_blank" rel="noopener">${q.icon}<span>${esc(q.label)}</span></a>`).join("");
 
 const avatar = document.getElementById("avatar");
-if (P.photo) avatar.innerHTML = `<img src="${P.photo}" alt="${fullName}">`;
+if (P.photo) avatar.innerHTML = `<img src="${esc(P.photo)}" alt="${esc(fullName)}">`;
 else avatar.textContent = (P.firstName[0] + P.lastName[0]).toUpperCase();
 
 document.getElementById("links").innerHTML = LINKS.map((l, i) => `
-  <li><a class="link" href="${l.href}" ${/^https?:/.test(l.href) ? 'target="_blank" rel="noopener"' : ""} style="animation-delay:${0.25 + i * 0.06}s">
+  <li><a class="link" href="${esc(l.href)}" ${/^https?:/.test(l.href) ? 'target="_blank" rel="noopener"' : ""} style="animation-delay:${0.25 + i * 0.06}s">
     <span class="ico" style="background:${l.color}">${ICONS[l.key]}</span>
-    <span class="txt"><div class="label">${l.label}</div><div class="sub">${l.sub}</div></span>
+    <span class="txt"><div class="label">${esc(l.label)}</div><div class="sub">${esc(l.sub)}</div></span>
     <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
   </a></li>`).join("");
 
@@ -365,7 +411,7 @@ document.getElementById("shareBtn").onclick = async () => {
   if (navigator.share) {
     try { await navigator.share({ title: fullName, text: P.role, url: cardUrl }); } catch {}
   } else {
-    try { await navigator.clipboard.writeText(cardUrl); toast("Link copied"); } catch { toast(cardUrl); }
+    try { await navigator.clipboard.writeText(cardUrl); toast(T.copied); } catch { toast(cardUrl); }
   }
 };
 
