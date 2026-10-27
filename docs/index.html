@@ -4,164 +4,234 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#eef2f1" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#10181f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0b0d12">
 <title>Business card</title>
 <meta name="description" content="Digital business card">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-  /* Même identité que le portfolio : vitre de scanner, feuille, palette viridis */
   :root {
-    --glass: #eef2f1; --paper: #fbfcfb; --tint: #e5ebe9; --ink: #1d2b36; --ink-soft: #4b5a64;
-    --line: #ccd6d3; --accent: #31688e; --fam: #440154; --on-ink: #fbfcfb;
-    --v0: #440154; --v1: #3b528b; --v2: #21918c; --v3: #5ec962; --v4: #fde725;
+    --bg: #f3f5fc;
+    --card: #ffffff;
+    --text: #0f1424;
+    --muted: #5a6273;
+    --line: rgba(15, 18, 25, 0.08);
+    --row: #f6f7fa;
+    --row-hover: #eceef3;
+    --accent: #4f46e5;
+    --accent-2: #06b6d4;
+    --accent-3: #7c3aed;
+    --on-accent: #ffffff;
+    --shadow: 0 30px 60px -20px rgba(49, 46, 129, 0.25), 0 2px 6px rgba(20, 30, 60, 0.05);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --glass: #10181f; --paper: #16212a; --tint: #1d2a34; --ink: #e8eeec; --ink-soft: #a9b6b3;
-      --line: #2c3b46; --accent: #7fc8e8; --fam: #fde725; --on-ink: #10181f;
+      --bg: #07080c;
+      --card: #10131a;
+      --text: #eef0f5;
+      --muted: #9097a8;
+      --line: rgba(255, 255, 255, 0.07);
+      --row: #161a23;
+      --row-hover: #1c212c;
+      --accent: #818cf8;
+      --accent-2: #22d3ee;
+      --accent-3: #a78bfa;
+      --on-accent: #0a0d18;
+      --shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04);
     }
   }
   :root[data-theme="dark"] {
-    --glass: #10181f; --paper: #16212a; --tint: #1d2a34; --ink: #e8eeec; --ink-soft: #a9b6b3;
-    --line: #2c3b46; --accent: #7fc8e8; --fam: #fde725; --on-ink: #10181f;
+    --bg: #07080c; --card: #10131a; --text: #eef0f5; --muted: #9097a8;
+    --line: rgba(255,255,255,0.07); --row: #161a23; --row-hover: #1c212c;
+    --accent: #818cf8; --accent-2: #22d3ee; --accent-3: #a78bfa; --on-accent: #0a0d18;
+    --shadow: 0 30px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
   }
 
   * { box-sizing: border-box; margin: 0; }
   html, body { min-height: 100%; }
   body {
-    font: 400 15px/1.55 "IBM Plex Sans", system-ui, sans-serif;
-    background: var(--glass); color: var(--ink);
-    display: grid; grid-template-columns: minmax(0, 420px); justify-content: center; align-content: center;
-    padding: 32px 16px 40px; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: grid;
+    grid-template-columns: minmax(0, 420px);
+    justify-content: center;
+    align-content: center;
+    padding: 24px 16px 40px;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
   }
-  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  /* soft background glow */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -20vmax;
+    background:
+      radial-gradient(40vmax 40vmax at 15% 10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%),
+      radial-gradient(35vmax 35vmax at 90% 90%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+  }
 
-  /* la carte est une feuille posée sur la vitre, avec deux repères de cadrage */
   .card {
-    position: relative; width: 100%; max-width: 420px;
-    background: var(--paper); border: 1px solid var(--line); border-radius: 6px;
-    box-shadow: 0 24px 50px -28px rgba(29, 43, 54, .35);
-    animation: rise .6s cubic-bezier(.2, .8, .2, 1) both;
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: rise .7s cubic-bezier(.2,.8,.2,1) both;
   }
-  .card::before, .card::after { content: ""; position: absolute; width: 18px; height: 18px; border: 2px solid var(--v2); pointer-events: none; }
-  .card::before { top: -9px; left: -9px; border-right: 0; border-bottom: 0; }
-  .card::after { bottom: -9px; right: -9px; border-left: 0; border-top: 0; }
 
-  .banner { height: 10px; border-radius: 5px 5px 0 0; background: linear-gradient(90deg, var(--v0), var(--v1), var(--v2), var(--v3), var(--v4)); }
+  .banner {
+    height: 112px;
+    background:
+      linear-gradient(120deg, var(--accent) 0%, var(--accent-3) 50%, var(--accent-2) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  /* subtle signal-wave motif — nod to signal processing */
+  .banner svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .35; }
 
-  .head { position: relative; padding: 24px 24px 0; }
+  .head { padding: 0 24px; margin-top: -48px; position: relative; }
   .avatar {
-    width: 88px; aspect-ratio: 4 / 5; border-radius: 4px; overflow: hidden;
-    border: 3px solid var(--paper); box-shadow: 0 0 0 1px var(--line), 5px 5px 0 var(--v2);
-    background: var(--tint); color: var(--ink); display: grid; place-items: center;
-    font: 800 28px "Bricolage Grotesque", sans-serif;
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    border: 4px solid var(--card);
+    background: linear-gradient(135deg, #1b2030, #2b3350);
+    color: #fff;
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 32px; letter-spacing: .5px;
+    overflow: hidden;
   }
-  .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
   .theme-toggle {
-    position: absolute; right: 20px; top: 22px; width: 38px; height: 38px; border-radius: 6px;
-    border: 1px solid var(--line); background: var(--paper); color: var(--ink-soft); cursor: pointer;
+    position: absolute; right: 20px; top: 58px;
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--row);
+    color: var(--muted); cursor: pointer;
     display: grid; place-items: center;
   }
-  .theme-toggle:hover { color: var(--ink); background: var(--tint); }
+  .theme-toggle:hover { color: var(--text); }
 
-  h1 {
-    font: 800 30px/1.02 "Bricolage Grotesque", sans-serif; font-variation-settings: "opsz" 96;
-    letter-spacing: -.02em; margin-top: 20px;
+  h1 { font-family: "Plus Jakarta Sans", "Inter", sans-serif; font-size: 25px; font-weight: 800; letter-spacing: -.02em; margin-top: 14px; line-height: 1.2; }
+  .role {
+    font-size: 14.5px; font-weight: 500; margin-top: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-3) 55%, var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  h1 .fam { display: block; color: var(--fam); }
-  .role { font-size: 15px; font-weight: 600; color: var(--accent); margin-top: 8px; }
-  .meta { display: flex; align-items: center; gap: 6px; color: var(--ink-soft); font-size: 13.5px; margin-top: 6px; }
-  .bio { color: var(--ink-soft); font-size: 14.5px; margin-top: 14px; }
-
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-  .tag { font-size: 12.5px; font-weight: 500; padding: 3px 9px; border-radius: 3px; background: var(--tint); color: var(--ink); }
-
-  .actions { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 22px 24px 0; }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    height: 48px; border-radius: 6px; border: 1px solid transparent; cursor: pointer;
-    font: 600 15px "IBM Plex Sans", sans-serif; text-decoration: none;
-    transition: transform .15s ease, background .15s ease;
-  }
-  .btn:active { transform: scale(.97); }
-  .btn-primary { background: var(--ink); color: var(--on-ink); }
-  .btn-primary:hover { background: var(--accent); color: var(--on-ink); }
-  .btn-ghost { width: 48px; background: var(--paper); color: var(--ink); border-color: var(--ink); }
-  .btn-ghost:hover { background: var(--tint); }
-
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
   /* raccourcis vers le portfolio : CV, agent CK-AI, projets */
   .quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 24px 0; }
   .quick a {
-    display: grid; justify-items: center; gap: 6px; padding: 12px 6px; border-radius: 6px;
-    background: var(--tint); color: var(--ink); text-decoration: none;
-    font-size: 13px; font-weight: 600; text-align: center; transition: background .15s ease;
+    display: grid; justify-items: center; gap: 6px; padding: 12px 6px; border-radius: 16px;
+    background: color-mix(in srgb, var(--accent) 9%, var(--card)); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    color: var(--text); text-decoration: none; font-size: 12.5px; font-weight: 600; text-align: center;
+    transition: transform .15s ease, background .15s ease;
   }
-  .quick a:hover { background: color-mix(in srgb, var(--v2) 18%, var(--tint)); }
+  .quick a:hover { background: color-mix(in srgb, var(--accent) 15%, var(--card)); transform: translateY(-2px); }
   .quick a:active { transform: scale(.97); }
   .quick svg { width: 20px; height: 20px; color: var(--accent); }
+  .meta { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .bio { color: var(--muted); font-size: 14px; line-height: 1.55; margin-top: 14px; }
 
-  .links { list-style: none; padding: 18px 24px 4px; display: grid; }
-  .links li + li { border-top: 1px solid var(--line); }
-  .link {
-    display: flex; align-items: center; gap: 14px; padding: 11px 2px;
-    color: var(--ink); text-decoration: none; border-radius: 4px;
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .tag {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    padding: 5px 9px; border-radius: 999px;
+    background: var(--row); border: 1px solid var(--line); color: var(--muted);
   }
-  .link:hover .label { color: var(--accent); }
-  .link:hover .chev { transform: translateX(3px); color: var(--ink); }
-  .ico { width: 38px; height: 38px; border-radius: 6px; flex: none; display: grid; place-items: center; }
-  .ico svg { width: 19px; height: 19px; }
+
+  .actions { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 20px 24px 6px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 48px; border-radius: 14px; border: 0; cursor: pointer;
+    font: 600 15px "Inter", sans-serif; text-decoration: none;
+    transition: transform .15s ease, filter .15s ease, background .15s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: linear-gradient(120deg, var(--accent), var(--accent-3)); color: var(--on-accent); box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 70%, transparent); }
+  .btn-primary:hover { filter: brightness(1.15); }
+  .btn-ghost { width: 48px; background: var(--row); color: var(--text); border: 1px solid var(--line); }
+  .btn-ghost:hover { background: var(--row-hover); }
+
+  .links { list-style: none; padding: 14px 16px 8px; display: grid; gap: 8px; }
+  .link {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 14px; border-radius: 16px;
+    background: var(--row); border: 1px solid var(--line);
+    color: var(--text); text-decoration: none;
+    transition: background .15s ease, transform .15s ease;
+    opacity: 0; animation: fadeIn .5s ease forwards;
+  }
+  .link:hover { background: var(--row-hover); transform: translateX(2px); }
+  .link:active { transform: scale(.985); }
+  .ico {
+    width: 40px; height: 40px; border-radius: 12px; flex: none;
+    display: grid; place-items: center; color: #fff;
+  }
+  .ico svg { width: 20px; height: 20px; }
   .txt { min-width: 0; flex: 1; }
-  .label { font-size: 15px; font-weight: 600; transition: color .15s ease; }
-  .sub { font-size: 13px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .chev { color: var(--ink-soft); flex: none; transition: transform .15s ease; }
+  .label { font-size: 14.5px; font-weight: 600; }
+  .sub { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .chev { color: var(--muted); flex: none; }
 
   footer {
-    display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    padding: 14px 24px 20px; margin-top: 8px; border-top: 1px dashed var(--line);
-    color: var(--ink-soft); font-size: 12.5px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px 22px; color: var(--muted); font-size: 12px;
   }
   footer button {
-    background: none; border: 0; color: var(--ink-soft); font: 600 12.5px "IBM Plex Sans", sans-serif; cursor: pointer;
-    display: inline-flex; gap: 6px; align-items: center; padding: 6px 0; white-space: nowrap;
+    background: none; border: 0; color: var(--muted); font: inherit; cursor: pointer;
+    display: inline-flex; gap: 6px; align-items: center;
   }
-  footer button:hover { color: var(--ink); }
+  footer button:hover { color: var(--text); }
 
-  /* QR pour partager la carte en personne, d'écran à écran */
-  .modal { position: fixed; inset: 0; display: none; place-items: center; padding: 16px; background: rgba(16, 24, 31, .6); z-index: 10; }
+  /* QR modal (for sharing your card in person, screen to screen) */
+  .modal {
+    position: fixed; inset: 0; display: none; place-items: center; padding: 16px;
+    background: rgba(5, 7, 12, .6); backdrop-filter: blur(6px); z-index: 10;
+  }
   .modal.open { display: grid; }
   .modal-box {
-    background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 24px; text-align: center;
-    width: 100%; max-width: 320px; animation: rise .3s ease both;
+    background: var(--card); border-radius: 24px; padding: 24px; text-align: center;
+    width: 100%; max-width: 320px; box-shadow: var(--shadow); animation: rise .35s ease both;
   }
-  .qr { background: #fff; border-radius: 4px; padding: 14px; display: inline-block; margin: 4px 0 14px; box-shadow: 0 0 0 1px var(--line), 5px 5px 0 var(--v2); }
+  .qr { background: #fff; border-radius: 16px; padding: 16px; display: inline-block; margin: 6px 0 14px; }
   .qr img, .qr canvas { display: block; width: 220px !important; height: 220px !important; }
-  .modal-box p { color: var(--ink-soft); font-size: 13.5px; }
-  .modal-box .btn { width: 100%; margin-top: 16px; background: var(--paper); color: var(--ink); border-color: var(--ink); }
+  .modal-box p { color: var(--muted); font-size: 13px; }
+  .modal-box .btn { width: 100%; margin-top: 16px; background: var(--row); color: var(--text); border: 1px solid var(--line); }
 
   .toast {
     position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
-    background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 6px;
-    font-size: 14px; font-weight: 500; opacity: 0; transition: all .25s ease; pointer-events: none;
+    background: var(--text); color: var(--card); padding: 10px 16px; border-radius: 12px;
+    font-size: 13.5px; font-weight: 500; opacity: 0; transition: all .25s ease; pointer-events: none;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   body:not(.ready) .card { visibility: hidden; }
-  .locked { color: var(--ink-soft); font-size: 15px; text-align: center; }
+  .locked { color: var(--muted); font-size: 15px; text-align: center; }
 
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
+    .link { opacity: 1; }
   }
 </style>
 </head>
 <body>
 
 <main class="card">
-  <div class="banner" aria-hidden="true"></div>
+  <div class="banner" aria-hidden="true">
+    <svg viewBox="0 0 400 112" preserveAspectRatio="none">
+      <path d="M0 56 Q 25 20 50 56 T 100 56 T 150 56 T 200 56 T 250 56 T 300 56 T 350 56 T 400 56" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <path d="M0 70 Q 40 40 80 70 T 160 70 T 240 70 T 320 70 T 400 70" fill="none" stroke="#fff" stroke-width="1" opacity=".7"/>
+      <path d="M0 40 Q 15 25 30 40 T 60 40 T 90 40 T 120 40 T 150 40 T 180 40 T 210 40 T 240 40 T 270 40 T 300 40 T 330 40 T 360 40 T 390 40" fill="none" stroke="#fff" stroke-width=".8" opacity=".5"/>
+    </svg>
+  </div>
 
   <section class="head">
     <div class="avatar" id="avatar"></div>
@@ -269,17 +339,17 @@ const fullName = `${P.firstName} ${P.lastName}`;
 const cardUrl = P.cardUrl || location.href;  // keeps the #k= key, so shared links still open the card
 
 const LINKS = [
-  { key: "portfolio", label: "Portfolio",  sub: short(P.portfolio), href: P.portfolio, bg: "#21918c", fg: "#fff" },
-  { key: "linkedin",  label: "LinkedIn",   sub: short(P.linkedin),  href: P.linkedin,  bg: "#3b528b", fg: "#fff" },
-  { key: "github",    label: "GitHub",     sub: short(P.github),    href: P.github,    bg: "#1d2b36", fg: "#fff" },
-  { key: "whatsapp",  label: "WhatsApp",   sub: T.message, href: `https://wa.me/${P.whatsapp}`, bg: "#5ec962", fg: "#1d2b36" },
-  { key: "email",     label: "Email",      sub: P.email,            href: `mailto:${P.email}`, bg: "#440154", fg: "#fff" },
-  { key: "phone",     label: T.call,       sub: P.phone,            href: `tel:${P.phone.replace(/\s/g, "")}`, bg: "#fde725", fg: "#1d2b36" }
+  { key: "portfolio", label: "Portfolio",  sub: short(P.portfolio), href: P.portfolio, color: "linear-gradient(135deg,#4f6bff,#00c2b8)" },
+  { key: "linkedin",  label: "LinkedIn",   sub: short(P.linkedin),  href: P.linkedin,  color: "#0a66c2" },
+  { key: "github",    label: "GitHub",     sub: short(P.github),    href: P.github,    color: "#24292f" },
+  { key: "whatsapp",  label: "WhatsApp",   sub: T.message, href: `https://wa.me/${P.whatsapp}`, color: "#1e8f4a" },
+  { key: "email",     label: "Email",      sub: P.email,            href: `mailto:${P.email}`, color: "#d93025" },
+  { key: "phone",     label: T.call,       sub: P.phone,            href: `tel:${P.phone.replace(/\s/g, "")}`, color: "#c2410c" }
 ];
 
 // --- render ---
 document.title = fullName;
-document.getElementById("name").innerHTML = `${esc(P.firstName)} <span class="fam">${esc(P.lastName)}</span>`;
+document.getElementById("name").textContent = fullName;
 document.getElementById("role").textContent = P.role;
 document.getElementById("location").textContent = P.location;
 document.getElementById("bio").textContent = P.bio;
@@ -302,8 +372,8 @@ if (P.photo) avatar.innerHTML = `<img src="${esc(P.photo)}" alt="${esc(fullName)
 else avatar.textContent = (P.firstName[0] + P.lastName[0]).toUpperCase();
 
 document.getElementById("links").innerHTML = LINKS.map((l, i) => `
-  <li><a class="link" href="${esc(l.href)}" ${/^https?:/.test(l.href) ? 'target="_blank" rel="noopener"' : ""}>
-    <span class="ico" style="background:${l.bg};color:${l.fg}" aria-hidden="true">${ICONS[l.key]}</span>
+  <li><a class="link" href="${esc(l.href)}" ${/^https?:/.test(l.href) ? 'target="_blank" rel="noopener"' : ""} style="animation-delay:${0.25 + i * 0.06}s">
+    <span class="ico" style="background:${l.color}">${ICONS[l.key]}</span>
     <span class="txt"><div class="label">${esc(l.label)}</div><div class="sub">${esc(l.sub)}</div></span>
     <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
   </a></li>`).join("");
@@ -350,7 +420,7 @@ const modal = document.getElementById("modal");
 let qrDone = false;
 document.getElementById("qrBtn").onclick = () => {
   if (!qrDone && window.QRCode) {
-    new QRCode(document.getElementById("qr"), { text: cardUrl, width: 440, height: 440, colorDark: "#1d2b36", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+    new QRCode(document.getElementById("qr"), { text: cardUrl, width: 440, height: 440, colorDark: "#0b0d12", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
     qrDone = true;
   }
   modal.classList.add("open");
