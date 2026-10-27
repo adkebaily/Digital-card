@@ -220,21 +220,60 @@
     *, *::before, *::after { animation: none !important; transition: none !important; }
     .link { opacity: 1; }
   }
+  /* ---------- Effets dynamiques ---------- */
+  :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+  body { perspective: 1200px; }
+  /* l'entrée ne doit pas figer transform, sinon l'inclinaison serait ignorée */
+  .card { position: relative; will-change: transform; animation-fill-mode: backwards; }
+  .banner svg { overflow: hidden; }
+  html, body { overflow-x: clip; }
+  /* reflet holographique qui suit le doigt, la souris ou l'inclinaison du téléphone */
+  .sheen {
+    position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 2; mix-blend-mode: soft-light;
+    background:
+      radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, .55), transparent 55%),
+      linear-gradient(115deg, transparent 20%, rgba(124, 58, 237, .25) 40%, rgba(6, 182, 212, .25) 55%, transparent 75%);
+    background-size: 100% 100%, 220% 220%; background-position: 0 0, var(--hx, 50%) 50%;
+    opacity: 0; transition: opacity .4s ease;
+  }
+  .card.live .sheen { opacity: 1; }
+  /* ondes du signal qui défilent dans le bandeau */
+  .banner .w1 { animation: flow 6s linear infinite; --p: -100px; }
+  .banner .w2 { animation: flow 9s linear infinite; --p: -160px; }
+  .banner .w3 { animation: flow 4s linear infinite; --p: -60px; }
+  @keyframes flow { to { transform: translateX(var(--p)); } }
+  /* anneau en dégradé qui tourne autour de la photo */
+  .avatar-wrap { position: relative; width: 96px; height: 96px; }
+  .avatar-wrap::before {
+    content: ""; position: absolute; inset: -3px; border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--accent), var(--accent-3), var(--accent-2), transparent 70%, var(--accent));
+    animation: spin 6s linear infinite;
+  }
+  .avatar-wrap .avatar { position: relative; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* titre en dégradé qui ondule lentement */
+  .role { background-image: linear-gradient(90deg, var(--accent), var(--accent-3), var(--accent-2), var(--accent)); background-size: 200% 100%; animation: shimmer 6s linear infinite; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .sheen { display: none; }
+    .card { transform: none !important; }
+  }
 </style>
 </head>
 <body>
 
-<main class="card">
+<main class="card" id="card">
+  <div class="sheen" aria-hidden="true"></div>
   <div class="banner" aria-hidden="true">
     <svg viewBox="0 0 400 112" preserveAspectRatio="none">
-      <path d="M0 56 Q 25 20 50 56 T 100 56 T 150 56 T 200 56 T 250 56 T 300 56 T 350 56 T 400 56" fill="none" stroke="#fff" stroke-width="1.5"/>
-      <path d="M0 70 Q 40 40 80 70 T 160 70 T 240 70 T 320 70 T 400 70" fill="none" stroke="#fff" stroke-width="1" opacity=".7"/>
-      <path d="M0 40 Q 15 25 30 40 T 60 40 T 90 40 T 120 40 T 150 40 T 180 40 T 210 40 T 240 40 T 270 40 T 300 40 T 330 40 T 360 40 T 390 40" fill="none" stroke="#fff" stroke-width=".8" opacity=".5"/>
+      <path class="w1" d="M0 56 Q 25.0 20 50 56 T 100 56 T 150 56 T 200 56 T 250 56 T 300 56 T 350 56 T 400 56 T 450 56 T 500 56" fill="none" stroke="#fff" stroke-width="1.5"/>
+      <path class="w2" d="M0 70 Q 40.0 40 80 70 T 160 70 T 240 70 T 320 70 T 400 70 T 480 70 T 560 70" fill="none" stroke="#fff" stroke-width="1" opacity=".7"/>
+      <path class="w3" d="M0 40 Q 15.0 25 30 40 T 60 40 T 90 40 T 120 40 T 150 40 T 180 40 T 210 40 T 240 40 T 270 40 T 300 40 T 330 40 T 360 40 T 390 40 T 420 40 T 450 40 T 480 40" fill="none" stroke="#fff" stroke-width=".8" opacity=".5"/>
     </svg>
   </div>
 
   <section class="head">
-    <div class="avatar" id="avatar"></div>
+    <div class="avatar-wrap"><div class="avatar" id="avatar"></div></div>
     <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
@@ -428,6 +467,28 @@ document.getElementById("qrBtn").onclick = () => {
 document.getElementById("closeModal").onclick = () => modal.classList.remove("open");
 modal.onclick = e => { if (e.target === modal) modal.classList.remove("open"); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") modal.classList.remove("open"); });
+
+// --- inclinaison 3D et reflet (souris, doigt ou gyroscope) ---
+const card = document.getElementById("card");
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  let tx = 0, ty = 0, cx = 0, cy = 0, run = false;
+  const loop = () => {
+    cx += (tx - cx) * .12; cy += (ty - cy) * .12;
+    card.style.transform = `rotateX(${cy * 8}deg) rotateY(${cx * 10}deg)`;
+    card.style.setProperty("--mx", `${50 + cx * 50}%`);
+    card.style.setProperty("--my", `${50 - cy * 50}%`);
+    card.style.setProperty("--hx", `${50 + cx * 60}%`);
+    if (Math.abs(tx - cx) > .001 || Math.abs(ty - cy) > .001) requestAnimationFrame(loop); else run = false;
+  };
+  const aim = (x, y) => { tx = Math.max(-1, Math.min(1, x)); ty = Math.max(-1, Math.min(1, y)); card.classList.add("live"); if (!run) { run = true; requestAnimationFrame(loop); } };
+  const fromPointer = e => { const r = card.getBoundingClientRect(); aim((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height * 2 - 1)); };
+  card.addEventListener("pointermove", fromPointer);
+  card.addEventListener("pointerleave", () => { aim(0, 0); card.classList.remove("live"); });
+  // Android : le gyroscope incline la carte sans demander d'autorisation
+  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission !== "function") {
+    addEventListener("deviceorientation", e => { if (e.gamma != null) aim(e.gamma / 30, -(e.beta - 45) / 30); });
+  }
+}
 
 // --- theme toggle (remembered per device) ---
 const root = document.documentElement;
